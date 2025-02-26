@@ -13,6 +13,6 @@ This project automates the profiling of datasets to help users understand key in
 ## Installation
 Clone the repository and install the required dependencies:  
 ```bash
-git clone https://github.com/yourusername/Data-Profiling-Toolkit.git
+git clone https://github.com/JobitJames/Data-Profiling-Toolkit.git
 cd Data-Profiling-Toolkit
 pip install -r requirements.txt
