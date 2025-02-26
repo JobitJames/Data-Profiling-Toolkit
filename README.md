@@ -12,7 +12,7 @@ This project automates dataset profiling using ydata-profiling (formerly pandas-
 
 Acknowledgments
 - This project utilizes ydata-profiling for data analysis and reporting.
-- 
+  
 ## Installation
 Clone the repository and install the required dependencies:  
 ```bash
