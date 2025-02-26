@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Profiling WebApp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .progress-container {
+            display: none;
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+            height: 25px;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 25px;
+            color: white;
+            font-weight: bold;
+        }
+        .success-message {
+            display: none;
+            color: green;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .error-message {
+            display: none;
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Upload a CSV file for Data Profiling</h2>
+    <form id="upload-form" action="/" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Upload & Analyze</button>
+    </form>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar">0%</div>
+    </div>
+
+    <div class="success-message" id="success-message">✅ Report generated successfully! Downloading now...</div>
+    <div class="error-message" id="error-message">❌ Error occurred while processing.</div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const submitBtn = e.target.querySelector('button');
+            const progressBar = document.getElementById('progress-bar');
+            const progressContainer = document.querySelector('.progress-container');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Processing...';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressBar.innerText = '0%';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress < 90) { // Fill up to 90% while processing
+                    progress += 10;
+                    progressBar.style.width = progress + '%';
+                    progressBar.innerText = progress + '%';
+                }
+            }, 1000);
+
+            try {
+                const response = await fetch('/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Unknown error occurred.');
+                }
+
+                clearInterval(interval);
+                progressBar.style.width = '100%';
+                progressBar.innerText = '100%';
+                successMessage.style.display = 'block';
+
+                // Wait briefly before downloading the file
+                setTimeout(() => {
+                    response.blob().then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'data_profiling_report.html'; // Set a proper name
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                    });
+                }, 1000);
+
+            } catch (error) {
+                clearInterval(interval);
+                errorMessage.innerText = `❌ ${error.message}`;
+                errorMessage.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Upload & Analyze';
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    successMessage.style.display = 'none';
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
