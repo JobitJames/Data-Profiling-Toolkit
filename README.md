@@ -1,7 +1,7 @@
 # Data Profiling Toolkit
 
 ## Overview
-This project automates the profiling of datasets to help users understand key insights such as missing values, distributions, correlations, and more. It simplifies exploratory data analysis (EDA) by generating a detailed report from structured datasets.
+This project automates dataset profiling using ydata-profiling (formerly pandas-profiling). It generates detailed reports with key insights, such as missing values, distributions, correlations, and more, making exploratory data analysis (EDA) faster and easier.
 
 ## Features
 - Automatic detection of missing values  
